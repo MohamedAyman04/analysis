@@ -21,18 +21,17 @@ public class TheSolisCode {
             return 1;
         }
 
-        // Invalid: leading zero
-        if (code.charAt(index) == '0') {
-            return 0;
+        int count = 0;
+
+        // Try single digit decode (only valid if not '0')
+        if (code.charAt(index) != '0') {
+            count += solisDecodeDivHelper(code, index + 1);
         }
 
-        // Try single digit decode
-        int count = solisDecodeDivHelper(code, index + 1);
-
-        // Try two digit decode if possible
+        // Try two digit decode if possible (valid for 1-26, including 01-09)
         if (index + 1 < code.length()) {
             int twoDigit = Integer.parseInt(code.substring(index, index + 2));
-            if (twoDigit >= 10 && twoDigit <= 26) {
+            if (twoDigit >= 1 && twoDigit <= 26) {
                 count += solisDecodeDivHelper(code, index + 2);
             }
         }
@@ -56,20 +55,19 @@ public class TheSolisCode {
         // Base case: empty string has 1 way
         dp[0] = 1;
 
-        // First character
+        // First character (only valid if not '0')
         dp[1] = Code.charAt(0) == '0' ? 0 : 1;
 
         // Fill the dp array
         for (int i = 2; i <= n; i++) {
-            // Single digit decode
-            int oneDigit = Integer.parseInt(Code.substring(i - 1, i));
-            if (oneDigit >= 1 && oneDigit <= 9) {
+            // Single digit decode (1-9, not 0)
+            if (Code.charAt(i - 1) != '0') {
                 dp[i] += dp[i - 1];
             }
 
-            // Two digit decode
+            // Two digit decode (1-26, including 01-09)
             int twoDigit = Integer.parseInt(Code.substring(i - 2, i));
-            if (twoDigit >= 10 && twoDigit <= 26) {
+            if (twoDigit >= 1 && twoDigit <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
@@ -105,22 +103,17 @@ public class TheSolisCode {
             return;
         }
 
-        // Invalid: leading zero
-        if (code.charAt(index) == '0') {
-            return;
-        }
-
-        // Try single digit decode
-        int oneDigit = Integer.parseInt(code.substring(index, index + 1));
-        if (oneDigit >= 1 && oneDigit <= 9) {
+        // Try single digit decode (only valid if not '0')
+        if (code.charAt(index) != '0') {
+            int oneDigit = Integer.parseInt(code.substring(index, index + 1));
             char letter = (char) ('a' + oneDigit - 1);
             solisDecodeResultsHelper(code, index + 1, current + letter, results);
         }
 
-        // Try two digit decode if possible
+        // Try two digit decode if possible (valid for 1-26, including 01-09)
         if (index + 1 < code.length()) {
             int twoDigit = Integer.parseInt(code.substring(index, index + 2));
-            if (twoDigit >= 10 && twoDigit <= 26) {
+            if (twoDigit >= 1 && twoDigit <= 26) {
                 char letter = (char) ('a' + twoDigit - 1);
                 solisDecodeResultsHelper(code, index + 2, current + letter, results);
             }
